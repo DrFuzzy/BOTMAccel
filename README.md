@@ -1,0 +1,61 @@
+# ACO (Ant Colony Optimization)
+
+This repository contains implementations of the Ant Colony Optimization (ACO) algorithm in Python, MATLAB, C++, and HLS. A `run_aco.sh` bash script is provided to run the algorithms in Python and C++ with multiple random seeds.
+
+## Prerequisites
+
+* **Python 3.x** (for the Python implementation)
+* **C++ compiler** (e.g., `g++`, for the C++ implementation)
+* **Bash shell** (for executing the `.sh` script)
+
+## Python Version
+
+### Running the Python Implementation
+
+To run the Python ACO script, use the following command:
+
+```bash
+python3 aco.py --seed 12345 --csv example1.csv
+```
+
+**Usage:**
+
+```
+aco.py [-h] [--seed SEED] --csv CSV_FILE
+```
+
+## C++ Version
+
+### Running the C++ Implementation
+
+To run the C++ ACO program, compile it first (if not already compiled), then run:
+
+```bash
+./aco 12345 example1.csv
+```
+
+**Usage:**
+
+```
+./aco <seed> <filename.csv>
+```
+
+## Bash Script
+
+### Running ACO with `run_aco.sh`
+
+This script can be used to run the ACO implementations across a range of seeds.
+
+**Usage:**
+
+```
+./run_aco.sh <start_seed> <end_seed> <input.csv> <output.csv>
+```
+
+**Examples:**
+
+```bash
+./run_aco.sh 1 100 example1.csv aco_python_results.csv
+./run_aco.sh 1 100 example1.csv aco_cpp_results.csv
+```
+
