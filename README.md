@@ -1,6 +1,6 @@
-# ACO (Ant Colony Optimization)
+# BOTMA (Bearings-Only Target Motion Analysis) Accelerator 
 
-This repository contains implementations of the Ant Colony Optimization (ACO) algorithm in Python, MATLAB, C++, and HLS. A `run_aco.sh` bash script is provided to run the algorithms in Python and C++ with multiple random seeds.
+This repository contains an implementation for an FPGA-Based SoC Accelerator for Ant Colony Optimisation in Bearings-Only Target Motion Analysis. Different code implementations in Python, MATLAB, C++, and HLS are provided. A `run_aco.sh` bash script is included to run the algorithms in Python and C++ with multiple random seeds.
 
 ## Prerequisites
 
