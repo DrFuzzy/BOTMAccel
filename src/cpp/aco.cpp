@@ -1,11 +1,11 @@
 #include "aco.h"
-#include <iostream>
-#include <fstream>
-#include <sstream>
+#include <chrono>
 #include <cstring>
+#include <fstream>
+#include <iostream>
 #include <limits>
 #include <random>
-#include <chrono>
+#include <sstream>
 
 using namespace std;
 
@@ -50,22 +50,24 @@ float random_float() {
 // }
 
 // //LFG (Lagged Fibonacci Generator) - HLS-friendly
-// static uint64_t lfg_state[2] = {RANDOM_SEED, RANDOM_SEED + 1}; // Two 64-bit states 
-// static const uint64_t lfg_m = 24; // Lag 1 
-// static const uint64_t lfg_n = 55; // Lag 2
+// static uint64_t lfg_state[2] = {RANDOM_SEED, RANDOM_SEED + 1}; // Two 64-bit
+// states static const uint64_t lfg_m = 24; // Lag 1 static const uint64_t lfg_n
+// = 55; // Lag 2
 
 // float random_float() {
-//     uint64_t next = (lfg_state[0] + lfg_state[1]) % (1ULL << 64); // Fibonacci sum 
-//     lfg_state[0] = lfg_state[1]; // Shift states lfg_state[1] = next; 
+//     uint64_t next = (lfg_state[0] + lfg_state[1]) % (1ULL << 64); //
+//     Fibonacci sum lfg_state[0] = lfg_state[1]; // Shift states lfg_state[1] =
+//     next;
 //     // Update new state
 //     return (next * 0.5 / (1ULL << 64)); // Normalize to [0, 1)
 // }
 
 // // Single-state Xorshift RNG (HLS-friendly)
 // static unsigned long xorshift_state = RANDOM_SEED;  // Single 32-bit or
-// // 64-bit state depending on system 
-// static const unsigned long xorshift_mult = 6364136223846793005UL;  // Multiplier for RNG 
-// static const unsigned long xorshift_add = 1442695040888963407UL;  // Golden ratio for better randomness
+// // 64-bit state depending on system
+// static const unsigned long xorshift_mult = 6364136223846793005UL;  //
+// Multiplier for RNG static const unsigned long xorshift_add =
+// 1442695040888963407UL;  // Golden ratio for better randomness
 
 // // Updated random_float function to return a float value in the range [0, 1)
 // float random_float() {
@@ -160,9 +162,9 @@ void aco(const float ownship_x[], const float ownship_y[],
                     1.0f / (1.0f + fitness[ant]); // Deposit pheromones
             }
         }
-        // Debug output for monitoring
-        // printf("Iteration %d/%d: Best Fitness = %.6f\n", iter + 1,
-        // ITERATIONS, best_fitness);
+
+        DEBUG_PRINT("Iteration " << iter + 1 << "/" << ITERATIONS
+                                 << ", Best Fitness: " << best_fitness);
     }
 }
 
@@ -189,9 +191,9 @@ void load_data(const char *file_path) {
             ownship_y[index] >> comma >> measure[index];
 
         DEBUG_PRINT(index << ", " << "timeframe = " << timeframe[index] << ", "
-         << "ownship_x = " << ownship_x[index] << ", "
-         << "ownship_y = " << ownship_y[index] << ", "
-         << "measure = " << measure[index]);
+                          << "ownship_x = " << ownship_x[index] << ", "
+                          << "ownship_y = " << ownship_y[index] << ", "
+                          << "measure = " << measure[index]);
 
         index++;
     }
@@ -201,8 +203,8 @@ void load_data(const char *file_path) {
     cout << "\nData successfully loaded. Total entries: " << data_size << "\n";
 }
 
-int main(int argc, char* argv[]) {
-    if (argc != 3) {  // Expect exactly two arguments
+int main(int argc, char *argv[]) {
+    if (argc != 3) { // Expect exactly two arguments
         cerr << "usage: %s <seed> <filename.csv>\n" << argv[0];
         return 1;
     }
@@ -221,7 +223,7 @@ int main(int argc, char* argv[]) {
         cerr << "Input file must end in .csv\n";
         return 1;
     }
-    
+
     // Load data
     load_data(argv[2]);
 
@@ -248,7 +250,7 @@ int main(int argc, char* argv[]) {
         cout << best_solution[i] << " ";
     }
     cout << "\nBest Fitness: " << best_fitness << "\n";
-    
+
     // Stop timing
     auto end_time = chrono::high_resolution_clock::now();
     auto elapsed = chrono::duration<double>(end_time - start_time).count();
