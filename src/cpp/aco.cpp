@@ -2,18 +2,12 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <cstring>
 #include <limits>
 #include <random>
 #include <chrono>
 
 using namespace std;
-
-// ACO parameters
-#define NUM_ANTS 100         // Number of ants
-#define DIMENSIONS 6         // Number of dimensions (6 parameters in total)
-#define ITERATIONS 2000      // Maximum number of iterations
-#define EVAPORATION_RATE 0.1 // Pheromone evaporation rate
-#define MAX_ENTRIES 1801     // Adjust this as per your actual data size
 
 // Parameter ranges (same as in Python code)
 const float parameter_ranges[DIMENSIONS][2] = {
@@ -176,13 +170,13 @@ void load_data(const char *file_path) {
     ifstream file(file_path);
 
     if (!file || !file.is_open()) {
-        cerr << "Error: Unable to open input file: " << file_path << endl;
+        cerr << "Error: Unable to open input file: \n" << file_path;
         return;
     }
 
     string line;
     if (getline(file, line)) {
-        cout << "Skipping header: " << line << endl;
+        cout << "Skipping header: " << line;
     }
 
     int index = 0;
@@ -194,29 +188,29 @@ void load_data(const char *file_path) {
         ss >> timeframe[index] >> comma >> ownship_x[index] >> comma >>
             ownship_y[index] >> comma >> measure[index];
 
-        // cout << index << ", " << "timeframe = " << timeframe[index] << ", "
-        // << "ownship_x = " << ownship_x[index] << ", "
-        // << "ownship_y = " << ownship_y[index] << ", "
-        // << "measure = " << measure[index] << endl;
+        DEBUG_PRINT(index << ", " << "timeframe = " << timeframe[index] << ", "
+         << "ownship_x = " << ownship_x[index] << ", "
+         << "ownship_y = " << ownship_y[index] << ", "
+         << "measure = " << measure[index]);
 
         index++;
     }
 
     data_size = index;
     file.close();
-    cout << "Data successfully loaded. Total entries: " << data_size << endl;
+    cout << "\nData successfully loaded. Total entries: " << data_size << "\n";
 }
 
 int main(int argc, char* argv[]) {
     if (argc != 3) {  // Expect exactly two arguments
-        fprintf(stderr, "usage: %s <seed> <filename.csv>\n", argv[0]);
+        cerr << "usage: %s <seed> <filename.csv>\n" << argv[0];
         return 1;
     }
 
     char *endptr;
     long seed = strtol(argv[1], &endptr, 10);
     if (*endptr != '\0') {
-        fprintf(stderr, "Invalid integer: %s\n", argv[1]);
+        cerr << "Invalid integer: %s\n" << argv[1];
         return 1;
     }
 
@@ -224,7 +218,7 @@ int main(int argc, char* argv[]) {
 
     size_t len = strlen(argv[2]);
     if (len < 4 || strcmp(argv[2] + len - 4, ".csv") != 0) {
-        fprintf(stderr, "Input file must end in .csv\n");
+        cerr << "Input file must end in .csv\n";
         return 1;
     }
     
@@ -245,7 +239,7 @@ int main(int argc, char* argv[]) {
     auto start_time = chrono::high_resolution_clock::now();
 
     // Run ACO routine
-    cout << "Running ACO minimization...\n";
+    cout << "Running ACO minimisation...\n";
     aco(ownship_x, ownship_y, measure, best_fitness, best_solution);
 
     // Print results
@@ -253,8 +247,7 @@ int main(int argc, char* argv[]) {
     for (int i = 0; i < DIMENSIONS; i++) {
         cout << best_solution[i] << " ";
     }
-    cout << endl;
-    cout << "Best Fitness: " << best_fitness << endl;
+    cout << "\nBest Fitness: " << best_fitness << "\n";
     
     // Stop timing
     auto end_time = chrono::high_resolution_clock::now();
