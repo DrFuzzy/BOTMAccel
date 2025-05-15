@@ -1,5 +1,5 @@
-#ifndef ACO_MINIMIZATION_H
-#define ACO_MINIMIZATION_H
+#ifndef ACO_H
+#define ACO_H
 
 #ifdef DEBUG
 #define DEBUG_PRINT(x) std::cout << "[DEBUG] " << x << std::endl
@@ -18,4 +18,4 @@ void aco(const float ownship_x[], const float ownship_y[],
          const float measure[], const float timeframe[], float &best_fitness,
          float best_solution[DIMENSIONS], int n);
 
-#endif // ACO_MINIMIZATION_H
+#endif // ACO_H
