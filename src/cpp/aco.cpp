@@ -103,10 +103,24 @@ float objective_function(const float theta[DIMENSIONS], const float ownship_x[],
         timeframe += SAMPLING_TIME;
 
         // Trajectory of the target based on the parameter vector theta
-        float x_t = theta[0] + timeframe * theta[2] +
-                    (timeframe * timeframe * theta[4]) / 2.0f;
-        float y_t = theta[1] + timeframe * theta[3] +
-                    (timeframe * timeframe * theta[5]) / 2.0f;
+        unsigned int pow = 1;
+        unsigned int fact = 1;
+        float x_t = 0;
+        float y_t = 0;
+        int j = 0;
+        int a = 1;
+        // Implementation of a summation of polynomial terms
+        // to describe the target's motion
+        while (j < DIMENSIONS) {
+            float gamma = pow / fact;
+            x_t = x_t + theta[j] * gamma;
+            j = j + 1;
+            y_t = y_t + theta[j] * gamma;
+            j = j + 1;
+            pow = pow * timeframe;
+            fact = fact * a;
+            a = a + 1;
+        }
 
         // Calculate h (angle)
         float h = atan2f(y_t - ownship_y[i], x_t - ownship_x[i]);

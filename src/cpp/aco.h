@@ -10,9 +10,9 @@
 #endif
 
 // ACO parameters
-#define NUM_ANTS 100         // Number of ants
+#define NUM_ANTS 200         // Number of ants
 #define DIMENSIONS 6         // Number of dimensions (6 parameters in total)
-#define ITERATIONS 2000      // Maximum number of iterations
+#define ITERATIONS 1000      // Maximum number of iterations
 #define EVAPORATION_RATE 0.1 // Pheromone evaporation rate
 #define MAX_ENTRIES 1801     // Adjust this as per your actual data size
 #define SAMPLING_TIME 2      // Sampling time

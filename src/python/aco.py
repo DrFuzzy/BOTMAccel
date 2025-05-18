@@ -3,6 +3,13 @@ import pandas as pd
 import time
 import argparse
 
+# Constants
+NUM_ANTS = 100
+DIMENSIONS = 6
+ITERATIONS = 2000
+EVAPORATION_RATE = 0.1
+
+
 # Define the parser
 parser = argparse.ArgumentParser(description='Short sample app')
 
@@ -31,9 +38,26 @@ def objective_function(theta):
 
     for i in range(n):
         # Trajectory of the target based on the parameter vector theta
-        x_t = theta[0] + timeframe[i] * theta[2] + (timeframe[i] ** 2 * theta[4]) / 2.0
-        y_t = theta[1] + timeframe[i] * theta[3] + (timeframe[i] ** 2 * theta[5]) / 2.0
 
+        pow_ = 1
+        fact = 1
+        x_t = 0.0
+        y_t = 0.0
+        j = 0
+        a = 1
+
+        # # Implementation of a summation of polynomial terms
+        # # to describe the target's motion
+        while j < DIMENSIONS :
+            gamma = pow_ / fact
+            x_t += theta[j] * gamma
+            j += 1
+            y_t += theta[j] * gamma
+            j += 1
+            pow_ *= timeframe[i]
+            fact *= a
+            a += 1
+            
         # Calculate h
         h = np.arctan2((y_t - ownship_y[i]), (x_t - ownship_x[i]))
 
@@ -61,12 +85,6 @@ def load_data(file_path):
 # Optimized ACO routine with parameter ranges
 def aco_minimization():
     global ownship_x, ownship_y, measure, timeframe, sigma
-
-    # Constants
-    NUM_ANTS = 100
-    DIMENSIONS = 6
-    ITERATIONS = 2000
-    EVAPORATION_RATE = 0.1
 
     # Parameter ranges
     parameter_ranges = [
