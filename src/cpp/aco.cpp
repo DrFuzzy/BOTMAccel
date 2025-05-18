@@ -100,7 +100,7 @@ float objective_function(const float theta[DIMENSIONS], const float ownship_x[],
     for (int i = 0; i < n; i++) {
 
         // Advance timeframe
-        timeframe += 2; // sampling rate = 2
+        timeframe += SAMPLING_TIME;
 
         // Trajectory of the target based on the parameter vector theta
         float x_t = theta[0] + timeframe * theta[2] +

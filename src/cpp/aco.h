@@ -15,6 +15,7 @@
 #define ITERATIONS 2000      // Maximum number of iterations
 #define EVAPORATION_RATE 0.1 // Pheromone evaporation rate
 #define MAX_ENTRIES 1801     // Adjust this as per your actual data size
+#define SAMPLING_TIME 2      // Sampling time
 
 void aco(const float ownship_x[], const float ownship_y[],
          const float measure[], const float timeframe[], float &best_fitness,
