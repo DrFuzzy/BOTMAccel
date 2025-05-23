@@ -1,16 +1,10 @@
-
-
 clear all 
 close all
 clc
 sigma=0.01;
 %caso2
-filename1='data/traj_327.txt';
-filename2='data/traj_11330.txt';
-
-%caso3
- filename1='data/traj_1000.txt';
- filename2='data/traj_2000.txt';
+filename1='../../../data/ushant_ais/data/traj_327.txt';
+filename2='../../../data/ushant_ais/data/traj_11330.txt';
 
 [x1,y1,x2,y2,lat1, lon1, lat2, lon2, t,lon1_raw, lat1_raw,lon2_raw, lat2_raw] = loadTraj(filename1,filename2);
 
@@ -22,7 +16,7 @@ MEASURE.z=MEASURE.h+MEASURE.w;
 %data to be printed
 PRINT=[t',x2',y2',MEASURE.z'];
 
-output_file = 'example3.csv';
+output_file = '../../../data/real_world_example.csv';
 % Write the matrix to a CSV file
 csvwrite(output_file, PRINT);
 
@@ -34,7 +28,6 @@ geoplot(lat1(1),lon1(1),'r*','Linewidth',2)
 geoplot(lat2(1),lon2(1),'b*','Linewidth',2)
 
 geobasemap topographic
-
 
 % function [x_uniform,y_uniform,t_uniform,lat_uniform,lon_uniform] = loadTraj(filename)
 % % Read AIS trajectory file

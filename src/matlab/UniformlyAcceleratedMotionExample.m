@@ -1,5 +1,3 @@
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %   Global DATA
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -8,7 +6,6 @@ DATA.T=2;%sampling time in seconds
 DATA.time_horizon=3600;%number of seconds
 DATA.sigma=0.01;%*deg2rad(.5);%standard deviation for the noise
 DATA.time=[0:DATA.time_horizon/DATA.T].*DATA.T;
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %   Target DATA
@@ -33,7 +30,6 @@ for k=0:DATA.time_horizon/DATA.T
      DATA.Y_t=[DATA.Y_t,DATA.psi(2)+DATA.psi(4)*k*DATA.T+...
         DATA.psi(6)*k^2*DATA.T^2/2];
 end
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %   Ownship DATA
@@ -66,12 +62,10 @@ DATA.MEASURE.h=atan((DATA.Y_t-DATA.Y_o)./(DATA.X_t-DATA.X_o));
 DATA.MEASURE.w=normrnd(0,DATA.sigma,1,length(DATA.MEASURE.h));
 DATA.MEASURE.z=DATA.MEASURE.h+DATA.MEASURE.w;
 
-
-
 %data to be printed
 PRINT=[DATA.time',DATA.X_o',DATA.Y_o',DATA.MEASURE.z'];
 
-output_file = 'outputUniformlyAccelerated.csv';
+output_file = '../../data/output_uniformly_accelerated.csv';
 % Write the matrix to a CSV file
 csvwrite(output_file, PRINT);
 % Display a confirmation message
