@@ -1,2 +1,33 @@
 aco
 data/ushant_ais
+
+# macOS system
+.DS_Store
+__MACOSX/
+MacOSX_*
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Trashes
+.Spotlight-V100
+.VolumeIcon.icns
+com.apple.timemachine.donotpresent
+
+# VSCode
+.vscode/
+
+# Xcode
+*.xcworkspace
+*.xcodeproj
+DerivedData/
+build/
+
+# Python
+__pycache__/
+*.pyc
+
+# General
+*.log
+*.bak
+*.tmp

@@ -3,8 +3,8 @@ close all
 clc
 sigma=0.01;
 %caso2
-filename1='../../../data/ushant_ais/data/traj_327.txt';
-filename2='../../../data/ushant_ais/data/traj_11330.txt';
+filename1='../../data/ushant_ais/data/traj_327.txt';
+filename2='../../data/ushant_ais/data/traj_11330.txt';
 
 [x1,y1,x2,y2,lat1, lon1, lat2, lon2, t,lon1_raw, lat1_raw,lon2_raw, lat2_raw] = loadTraj(filename1,filename2);
 

@@ -23,7 +23,6 @@ DATA.psi=[xt0,yt0,xdott0,ydott0,xddott0,yddott0,xjerk0,yjerk0];%real parameter v
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   Target Trajectory (without noise)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 DATA.X_t=[];
 DATA.Y_t=[];
 DATA.XDOT_t=[];
@@ -34,7 +33,6 @@ for k=0:DATA.time_horizon/DATA.T
      DATA.Y_t=[DATA.Y_t,DATA.psi(2)+DATA.psi(4)*k*DATA.T+...
         DATA.psi(6)*k^2*DATA.T^2/2+DATA.psi(8)*k^3*DATA.T^3/6];
 end
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %   Ownship DATA
@@ -63,17 +61,16 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %    Measurements : h ideal, w noise, z noisy
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 DATA.MEASURE=[];
 DATA.MEASURE.h=atan((DATA.Y_t-DATA.Y_o)./(DATA.X_t-DATA.X_o));
 DATA.MEASURE.w=normrnd(0,DATA.sigma,1,length(DATA.MEASURE.h));
 DATA.MEASURE.z=DATA.MEASURE.h+DATA.MEASURE.w;
 
 theta=rand(6,1);%random parameter vector to test objective function
-f = objectivefunction(theta,DATA.X_o,DATA.Y_o,DATA.MEASURE.z,DATA.sigma,DATA.time)
+f = objective_function(theta,DATA.X_o,DATA.Y_o,DATA.MEASURE.z,DATA.sigma,DATA.time)
 
 %for debugging, this is the result when the real parameter vector is used.
-fideal = objectivefunction(DATA.psi,DATA.X_o,DATA.Y_o,DATA.MEASURE.z,DATA.sigma,DATA.time)
+fideal = objective_function(DATA.psi,DATA.X_o,DATA.Y_o,DATA.MEASURE.z,DATA.sigma,DATA.time)
 
 %data to be printed
 PRINT=[DATA.time',DATA.X_o',DATA.Y_o',DATA.MEASURE.z'];

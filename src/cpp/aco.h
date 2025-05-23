@@ -9,9 +9,18 @@
 #define DEBUG_PRINT(x)
 #endif
 
-// ACO parameters
-#define NUM_ANTS 200         // Number of ants
-#define DIMENSIONS 6         // Number of dimensions (6 parameters in total)
+// Constants
+#define NUM_ANTS 100 // Number of ants
+#ifndef DIMENSIONS
+#warning "No DIMENSIONS set, defaulting to DIMENSIONS=6"
+#define DIMENSIONS 6 // Number of parameters
+#endif
+
+#if DIMENSIONS != 4 && DIMENSIONS != 6 && DIMENSIONS != 8
+#error                                                                         \
+    "Invalid DIMENSIONS value. DIMENSIONS must be defined as 4, 6, or 8 (e.g., -DDIMENSIONS=6)"
+#endif
+
 #define ITERATIONS 1000      // Maximum number of iterations
 #define EVAPORATION_RATE 0.1 // Pheromone evaporation rate
 #define MAX_ENTRIES 1801     // Adjust this as per your actual data size

@@ -2,7 +2,7 @@ clear all
 close all
 clc
 
-LinearMotionExample
+linear_motion_example
 
 figure()
 
@@ -17,22 +17,18 @@ geoplot(latT(1),lonT(1),'Color','red','Linewidth',2,'Marker','*')
 geoplot(lat,lon,'Color','blue','Linewidth',2)
 geoplot(lat(1),lon(1),'Color','blue','Linewidth',2,'Marker','+')
 
-UniformlyAcceleratedMotionExample
+uniformly_accelerated_motion_example
 
 [latT,lonT] = local2latlon(DATA.X_t,DATA.Y_t,DATA.Y_t.*0,origin);
 geoplot(latT,lonT,'Color','magenta','Linewidth',2,'LineStyle',':')
 
-
-PolynomialMotionExample
+polynomial_motion_example
 
 [latT,lonT] = local2latlon(DATA.X_t,DATA.Y_t,DATA.Y_t.*0,origin);
 geoplot(latT,lonT,'Color','black','Linewidth',2,'LineStyle','--')
 
-
 [lat,lon] = local2latlon(DATA.X_o,DATA.Y_o,DATA.Y_t.*0,origin);
 geoplot(lat,lon,'Color','blue','Linewidth',2)
 geoplot(lat(1),lon(1),'Color','blue','Linewidth',2,'Marker','+')
-
-
 
 geobasemap topographic

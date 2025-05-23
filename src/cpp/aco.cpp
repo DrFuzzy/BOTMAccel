@@ -9,25 +9,55 @@
 
 using namespace std;
 
-// Parameter ranges (same as in Python code)
-const float parameter_ranges[DIMENSIONS][2] = {
-    {0, 50000}, // Range for theta[0]
-    {0, 50000}, // Range for theta[1]
-    {-10, 10},  // Range for theta[2]
-    {-10, 10},  // Range for theta[3]
-    {0, 0},     // Range for theta[4]
-    {0, 0},     // Range for theta[5]
+// Parameter ranges
+#if DIMENSIONS == 4
+float pheromones[DIMENSIONS] = {1.0f, 1.0f, 1.0f, 1.0f};
+const float parameter_ranges[4][2] = {
+    {20000, 40000}, // theta[0]
+    {20000, 40000}, // theta[1]
+    {5, 10},        // theta[2]
+    {5, 10},        // theta[3]
 };
+
+#elif DIMENSIONS == 6
+float pheromones[DIMENSIONS] = {1.0f, 1.0f, 1.0f, 1.0f};
+const float parameter_ranges[6][2] = {
+    {20000, 40000}, // theta[0]
+    {20000, 40000}, // theta[1]
+    {5, 10},        // theta[2]
+    {5, 10},        // theta[3]
+    {-0.01, 0.01},  // theta[4]
+    {-0.01, 0.01},  // theta[5]
+};
+
+#elif DIMENSIONS == 8
+float pheromones[DIMENSIONS] = {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
+const float parameter_ranges[8][2] = {
+    {20000, 40000},     // theta[0]
+    {20000, 40000},     // theta[1]
+    {5, 10},            // theta[2]
+    {5, 10},            // theta[3]
+    {-0.01, 0.01},      // theta[4]
+    {-0.01, 0.01},      // theta[5]
+    {-0.0001, 0.0001},  // theta[6]
+    {-0.0001, 0.0001},  // theta[7]
+};
+
+#else
+#error "Invalid DIMENSIONS value. Must be 4, 6, or 8."
+#endif
 
 // Declare global arrays for data input
 float ownship_x[MAX_ENTRIES];
 float ownship_y[MAX_ENTRIES];
 float measure[MAX_ENTRIES];
 float timeframe[MAX_ENTRIES];
+// Global variables
 int data_size = 0;
+int numvars = 0;
+unsigned int random_state = 0; // globally assigned in main()
 
 // Random number generator (for simplicity, linear congruential generator)
-unsigned int random_state; // globally assigned in main()
 float random_float() {
     random_state = random_state * 1664525 + 1013904223;
     return (random_state % 1000) / 1000.0f; // Generate float in [0, 1)
@@ -133,8 +163,7 @@ void aco(const float ownship_x[], const float ownship_y[],
          const float measure[], float &best_fitness,
          float best_solution[DIMENSIONS]) {
 
-    // Initialise pheromones and best solution
-    float pheromones[DIMENSIONS] = {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
+    // Initialise best solution
     best_fitness = numeric_limits<float>::max();
 
     // ACO algorithm
@@ -215,8 +244,8 @@ void load_data(const char *file_path) {
 }
 
 int main(int argc, char *argv[]) {
-    if (argc != 3) { // Expect exactly two arguments
-        cerr << "usage: %s <seed> <filename.csv>\n" << argv[0];
+    if (argc != 3) { // Expect exactly three arguments
+        cerr << "Usage: " << argv[0] << " <seed> <filename.csv>\n";
         return 1;
     }
 

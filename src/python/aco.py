@@ -4,31 +4,36 @@ import time
 import argparse
 
 # Constants
-NUM_ANTS = 100
-DIMENSIONS = 6
-ITERATIONS = 2000
-EVAPORATION_RATE = 0.1
-
+NUM_ANTS = 100 # Number of ants
+DIMENSIONS = 6 # Number of parameters
+ITERATIONS = 1000 # Maximum number of iterations
+EVAPORATION_RATE = 0.1 # Pheromone evaporation rate
 
 # Define the parser
-parser = argparse.ArgumentParser(description='Short sample app')
+parser = argparse.ArgumentParser(description='ACO BOTMA')
 
 # Declare arguments
+parser.add_argument('--debug', action="store", dest='DEBUG', type=int, default=0)
 parser.add_argument('--seed', action="store", dest='seed', default=0)
+parser.add_argument('--numvars', action="store", dest='numvars', type=int, choices=[4, 6, 8],
+                    required=True, help="Number of variables: must be 4, 6, or 8")
 parser.add_argument('--csv', action="store", dest='csv_file', required=True, help="Path to the input CSV file")
 
-# Now, parse the command line arguments and store the 
-# values in the `args` variable
+# Parse the command line arguments and store the values in the `args` variable
 args = parser.parse_args()
-
-# Individual arguments can be accessed as attributes...
-#print(args.seed)
 
 # Global variables to store the data from .csv
 ownship_x = None
 ownship_y = None
 measure = None
 timeframe = None
+
+# Toggle debugging based on an environment variable or a constant
+DEBUG = args.DEBUG
+
+def debug_print(*args):
+    if DEBUG:
+        print("[DEBUG]", *args)
 
 # Objective function implementation
 def objective_function(theta):
@@ -37,8 +42,7 @@ def objective_function(theta):
     sum_squared_diff = 0.0
 
     for i in range(n):
-        # Trajectory of the target based on the parameter vector theta
-
+        # Compute target trajectory using a polynomial expansion vector theta
         pow_ = 1
         fact = 1
         x_t = 0.0
@@ -46,9 +50,7 @@ def objective_function(theta):
         j = 0
         a = 1
 
-        # # Implementation of a summation of polynomial terms
-        # # to describe the target's motion
-        while j < DIMENSIONS :
+        while j < int(args.numvars) :
             gamma = pow_ / fact
             x_t += theta[j] * gamma
             j += 1
@@ -77,40 +79,42 @@ def load_data(file_path):
     ownship_y = data["ownship_y"].astype(float).values
     measure = data["measure"].astype(float).values
     print("Data successfully loaded:")
-    #print("Timeframe:", timeframe)
-    #print("Ownship X:", ownship_x)
-    #print("Ownship Y:", ownship_y)
-    #print("Measure:", measure)
+    debug_print("Timeframe:", timeframe)
+    debug_print("Ownship X:", ownship_x)
+    debug_print("Ownship Y:", ownship_y)
+    debug_print("Measure:", measure)
 
-# Optimized ACO routine with parameter ranges
-def aco_minimization():
+# Optimised ACO routine with parameter ranges
+def aco():
     global ownship_x, ownship_y, measure, timeframe, sigma
 
     # Parameter ranges
     parameter_ranges = [
-        (0, 50000),  # Range for theta[0]
-        (0, 50000),  # Range for theta[1]
-        (-10, 10),    # Range for theta[2]
-        (-10, 10),    # Range for theta[3]
-        (0, 0),    # Range for theta[4]
-        (0, 0),    # Range for theta[5]
+        (20000, 40000),  # Range for theta[0]
+        (20000, 40000),  # Range for theta[1]
+        (5, 10),    # Range for theta[2]
+        (5, 10),    # Range for theta[3]
+        (-0.01, 0.01),    # Range for theta[4]
+        (-0.01, 0.01),    # Range for theta[5]
+        (-0.0001, 0.0001),    # Range for theta[6]
+        (-0.0001, 0.0001),    # Range for theta[7]
     ]
 
-    # Initialize pheromones and best solution
-    pheromones = np.ones(DIMENSIONS)
-    best_solution = np.zeros(DIMENSIONS)
+    # Initialise pheromones and best solution
+    pheromones = np.ones(int(args.numvars))
+    best_solution = np.zeros(int(args.numvars))
     best_fitness = float('inf')
 
     # RNG for reproducibility
     rng = np.random.default_rng(int(args.seed))
 
     for iter in range(ITERATIONS):
-        ants = np.zeros((NUM_ANTS, DIMENSIONS))
+        ants = np.zeros((NUM_ANTS, int(args.numvars)))
         fitness = np.zeros(NUM_ANTS)
 
         # Generate solutions and evaluate fitness
         for ant in range(NUM_ANTS):
-            for d in range(DIMENSIONS):
+            for d in range(int(args.numvars)):
                 lower_bound, upper_bound = parameter_ranges[d]
                 random_value = rng.random()  # Generate a random number in [0, 1]
                 ants[ant][d] = lower_bound + random_value * (upper_bound - lower_bound)  # Scale to parameter range
@@ -124,13 +128,13 @@ def aco_minimization():
                 best_solution = ants[ant].copy()
 
         # Update pheromones
-        for d in range(DIMENSIONS):
+        for d in range(int(args.numvars)):
             pheromones[d] *= (1.0 - EVAPORATION_RATE)  # Evaporation
             for ant in range(NUM_ANTS):
                 pheromones[d] += 1.0 / (1.0 + fitness[ant])  # Deposit pheromones
 
         # Debug output for monitoring
-        #print(f"Iteration {iter + 1}/{ITERATIONS}: Best Fitness = {best_fitness:.6f}")
+        debug_print(f"Iteration {iter + 1}/{ITERATIONS}: Best Fitness = {best_fitness:.6f}")
 
     return best_solution, best_fitness
 
@@ -139,10 +143,10 @@ load_data(args.csv_file)
 
 # Run ACO routine
 start_time = time.time()
-best_solution, best_fitness = aco_minimization()
+best_solution, best_fitness = aco()
 end_time = time.time()
 
 # Print results
-print(f"Best Solution: {best_solution}")
+print(f"Best Solution: {' '.join(map(str, best_solution))}") # Remove []
 print(f"Best Fitness: {best_fitness:.6f}")
 print(f"Elapsed Time: {end_time - start_time:.2f} seconds")
