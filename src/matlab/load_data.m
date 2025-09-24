@@ -2,9 +2,9 @@ clear all
 close all
 clc
 sigma=0.01;
-%caso2
-filename1='../../data/ushant_ais/data/traj_327.txt';
-filename2='../../data/ushant_ais/data/traj_11330.txt';
+% Case 2
+filename1='../../data/input/ushant_ais/data/traj_327.txt';
+filename2='../../data/input/ushant_ais/data/traj_11330.txt';
 
 [x1,y1,x2,y2,lat1, lon1, lat2, lon2, t,lon1_raw, lat1_raw,lon2_raw, lat2_raw] = loadTraj(filename1,filename2);
 
@@ -13,12 +13,22 @@ MEASURE.h=atan((y1-y2)./(x1-x2));
 MEASURE.w=normrnd(0,sigma,1,length(MEASURE.h));
 MEASURE.z=MEASURE.h+MEASURE.w;
 
-%data to be printed
+% Data to be printed
 PRINT=[t',x2',y2',MEASURE.z'];
 
-output_file = '../../../data/real_world_example.csv';
-% Write the matrix to a CSV file
-csvwrite(output_file, PRINT);
+% Open the file for writing
+output_file='../../data/input/real_world_example.csv';
+fid = fopen(output_file, 'w');
+
+% Write the header line and close file
+fprintf(fid, 'Time,X_o,Y_o,Z\n');
+fclose(fid);
+
+% Append the data to the file
+writematrix(PRINT, output_file, 'WriteMode', 'append');
+
+% Display a confirmation message
+disp(['CSV file created: ', output_file]);
 
 figure()
 geoplot(lat1,lon1,'Color','red','Linewidth',2)

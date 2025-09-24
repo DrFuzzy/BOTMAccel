@@ -12,15 +12,27 @@ using namespace std;
 // Parameter ranges
 #if DIMENSIONS == 4
 float pheromones[DIMENSIONS] = {1.0f, 1.0f, 1.0f, 1.0f};
+#if PARAM_SET == 0
 const float parameter_ranges[4][2] = {
     {20000, 40000}, // theta[0]
     {20000, 40000}, // theta[1]
     {5, 10},        // theta[2]
     {5, 10},        // theta[3]
 };
+#elif PARAM_SET == 1
+const float parameter_ranges[4][2] = {
+    {-500000, -200000}, // theta[0]
+    {2000000, 5000000}, // theta[1]
+    {0, 10},        // theta[2]
+    {0, 10},        // theta[3]
+};
+#else
+#error "Invalid PARAM_SET value. Must be 0, or 1."
+#endif
 
 #elif DIMENSIONS == 6
-float pheromones[DIMENSIONS] = {1.0f, 1.0f, 1.0f, 1.0f};
+float pheromones[DIMENSIONS] = {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
+#if PARAM_SET == 0
 const float parameter_ranges[6][2] = {
     {20000, 40000}, // theta[0]
     {20000, 40000}, // theta[1]
@@ -29,19 +41,46 @@ const float parameter_ranges[6][2] = {
     {-0.01, 0.01},  // theta[4]
     {-0.01, 0.01},  // theta[5]
 };
+#elif PARAM_SET == 1
+const float parameter_ranges[6][2] = {
+    {-500000, -200000}, // theta[0]
+    {2000000, 5000000}, // theta[1]
+    {0, 10},        // theta[2]
+    {0, 10},        // theta[3]
+    {0, 0.001},  // theta[4]
+    {-0.001, 0},  // theta[5]
+};
+#else
+#error "Invalid PARAM_SET value. Must be 0, or 1."
+#endif
 
 #elif DIMENSIONS == 8
-float pheromones[DIMENSIONS] = {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
+float pheromones[DIMENSIONS] = {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
+#if PARAM_SET == 0
 const float parameter_ranges[8][2] = {
-    {20000, 40000},     // theta[0]
-    {20000, 40000},     // theta[1]
-    {5, 10},            // theta[2]
-    {5, 10},            // theta[3]
-    {-0.01, 0.01},      // theta[4]
-    {-0.01, 0.01},      // theta[5]
-    {-0.0001, 0.0001},  // theta[6]
-    {-0.0001, 0.0001},  // theta[7]
+    {20000, 40000},    // theta[0]
+    {20000, 40000},    // theta[1]
+    {5, 10},           // theta[2]
+    {5, 10},           // theta[3]
+    {-0.01, 0.01},     // theta[4]
+    {-0.01, 0.01},     // theta[5]
+    {-0.0001, 0.0001}, // theta[6]
+    {-0.0001, 0.0001}, // theta[7]
 };
+#elif PARAM_SET == 1 
+const float parameter_ranges[8][2] = {
+    {-500000, -200000}, // theta[0]
+    {2000000, 5000000}, // theta[1]
+    {0, 10},        // theta[2]
+    {0, 10},        // theta[3]
+    {0, 0.001},  // theta[4]
+    {-0.001, 0},  // theta[5]
+    {-0.00001, 0.00001},  // theta[6]
+    {-0.00001, 0.00001},  // theta[7]
+};
+#else
+#error "Invalid PARAM_SET value. Must be 0, or 1."
+#endif
 
 #else
 #error "Invalid DIMENSIONS value. Must be 4, 6, or 8."
@@ -125,7 +164,7 @@ float objective_function(const float theta[DIMENSIONS], const float ownship_x[],
                          const float ownship_y[], const float measure[],
                          int n) {
     float sum_squared_diff = 0.0f;
-    unsigned int timeframe = 0;
+    float timeframe = 0;
 
     for (int i = 0; i < n; i++) {
 
@@ -135,12 +174,12 @@ float objective_function(const float theta[DIMENSIONS], const float ownship_x[],
         // Compute target trajectory using a polynomial expansion vector theta
         float x_t = 0.0f;
         float y_t = 0.0f;
-        unsigned int pow = 1;
+        float pow = 1.0f;
         unsigned int fact = 1;
         int order = 1;
 
         for (int j = 0; j < DIMENSIONS; j += 2) {
-            float gamma = static_cast<float>(pow) / static_cast<float>(fact);
+            float gamma = pow/ static_cast<float>(fact);
             x_t += theta[j] * gamma;
             y_t += theta[j + 1] * gamma;
 
@@ -176,9 +215,16 @@ void aco(const float ownship_x[], const float ownship_y[],
             for (int d = 0; d < DIMENSIONS; d++) {
                 // Generate a random value in the parameter range
                 float random_value = random_float();
-                ants[ant][d] = parameter_ranges[d][0] +
-                               random_value * (parameter_ranges[d][1] -
-                                               parameter_ranges[d][0]);
+    		    float bias = pheromones[d];
+   		        float lower = parameter_ranges[d][0];
+    		    float upper = parameter_ranges[d][1];
+
+    		    // scale rand by pheromone
+   		        float biased_rand = powf(random_value, 1.0f / (1.0f + bias));
+
+                if (random_float() <= 0.2) biased_rand = random_value; // here epsilon=0.2
+
+   		        ants[ant][d] = lower + biased_rand * (upper - lower);
             }
 
             // Evaluate fitness

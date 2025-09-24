@@ -21,10 +21,19 @@
     "Invalid DIMENSIONS value. DIMENSIONS must be defined as 4, 6, or 8 (e.g., -DDIMENSIONS=6)"
 #endif
 
+#ifndef PARAM_SET // Parameter range selection
+#warning "No PARAM_SET set (e.g. -DPARAM_SET=0), defaulting to DPARAM_SET=0"
+#define PARAM_SET 0   // 0 = default, 1 = real-world CSV params
+#endif
+
 #define ITERATIONS 1000      // Maximum number of iterations
 #define EVAPORATION_RATE 0.1 // Pheromone evaporation rate
 #define MAX_ENTRIES 1801     // Adjust this as per your actual data size
-#define SAMPLING_TIME 2      // Sampling time
+
+#ifndef SAMPLING_TIME // Sampling time
+#warning "No SAMPLING_TIME set (e.g. -DSAMPLING_TIME=2), defaulting to SAMPLING_TIME=2"
+#define SAMPLING_TIME 2 // RNG seed
+#endif
 
 void aco(const float ownship_x[], const float ownship_y[],
          const float measure[], const float timeframe[], float &best_fitness,

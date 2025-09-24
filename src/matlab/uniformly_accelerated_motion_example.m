@@ -64,8 +64,16 @@ DATA.MEASURE.z=DATA.MEASURE.h+DATA.MEASURE.w;
 %data to be printed
 PRINT=[DATA.time',DATA.X_o',DATA.Y_o',DATA.MEASURE.z'];
 
-output_file = '../../data/output_uniformly_accelerated.csv';
-% Write the matrix to a CSV file
-csvwrite(output_file, PRINT);
+% Open the file for writing
+output_file='../../data/input/output_uniformly_accelerated.csv';
+fid = fopen(output_file, 'w');
+
+% Write the header line and close file
+fprintf(fid, 'Time,X_o,Y_o,Z\n');
+fclose(fid);
+
+% Append the data to the file
+writematrix(PRINT, output_file, 'WriteMode', 'append');
+
 % Display a confirmation message
 disp(['CSV file created: ', output_file]);
