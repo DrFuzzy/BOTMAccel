@@ -3,6 +3,22 @@
 
 This repository contains an implementation for an FPGA-based SoC Accelerator for Ant Colony Optimization in Bearings-Only Target Motion Analysis. Code implementations in Python, MATLAB, C++, and HLS are provided. A `run_aco.sh` bash script is included to run the algorithms in Python and C++ with multiple random seeds.
 
+## Citation
+
+If you find this code useful or use it in your research, please cite the following paper, where this codebase was used to generate the experimental results:
+
+```bibtex
+@ARTICLE{11222596,
+  author  = {Deliparaschos, Kyriakos M. and Oliva, Gabriele},
+  journal = {IEEE Access},
+  title   = {FPGA-Accelerated ϵ-Greedy Ant Colony Optimisation for Maritime Bearings-Only Nonlinear Target Motion Analysis},
+  year    = {2025},
+  volume  = {13},
+  pages   = {190027--190039},
+  doi     = {10.1109/ACCESS.2025.3626686}
+}
+```
+
 ## Prerequisites
 
 * **Python 3.x** (for the Python implementation)
